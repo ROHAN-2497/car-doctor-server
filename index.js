@@ -48,15 +48,15 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/booking', async(req, res) =>{
-      console.log(req.query. email)
-      let query = {}
-      if  (req.query?.email){
-          query = {email: req.query.email}
+    app.get("/booking", async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
       }
       const result = await bookingCollectioin.find(query).toArray();
       res.send(result);
-    })
+    });
 
     // Bookings
     app.post("/booking", async (req, res) => {
@@ -66,17 +66,26 @@ async function run() {
       res.send(result);
     });
 
-    app.delete('/bookings/:id', async(req, res) =>{
+    app.delete("/bookings/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id : new ObjectId(id)}
+      const query = { _id: new ObjectId(id) };
       const result = await bookingCollectioin.deleteOne(query);
       res.send(result);
     });
 
-    app.put('/bookings/:id', async(req, res) =>{
+    app.patch("/bookings/:id", async(req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
       const updatedBooking = req.body;
-    })
-  
+      console.log(updatedBooking);
+      const updateDoc = {
+        $set: {
+          status: updatedBooking.status,
+        },
+      };
+      const result = await bookingCollectioin.updateOne(filter, updateDoc);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
